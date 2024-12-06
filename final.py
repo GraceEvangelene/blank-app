@@ -1,23 +1,27 @@
 import streamlit as st
 import mysql.connector
 import pandas as pd
+import os
 
-# Database connection function
+host = os.getenv("DB_HOST")
+port = os.getenv("DB_PORT")
+user = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+database = os.getenv("DB_NAME")
 def create_connection():
-    
     try:
         connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Keer3009@",  # Replace with your password
-            database="keerthana"   # Replace with your database name
+            host=host,
+            port=int(port),  # Ensure port is an integer
+            user=user,
+            password=password,
+            database=database
         )
         return connection
-    except mysql.connector.Error as e:
-        st.error(f"Database connection failed: {e}")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
         return None
-
-# Function to fetch data from the database
+        
 def fetch_data(query):
     try:
         connection = create_connection()
@@ -31,8 +35,7 @@ def fetch_data(query):
     except Exception as e:
         st.error(f"Error fetching data: {e}")
         return pd.DataFrame()
-
-# Function to execute write queries (INSERT, UPDATE, DELETE)
+        
 def execute_query(query, params=None):
     try:
         connection = create_connection()
